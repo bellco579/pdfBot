@@ -1,0 +1,16 @@
+
+# Created by https://www.gitignore.io/api/pycharm,python,django
+# Edit at https://www.gitignore.io/?templates=pycharm,python,django
+
+### Django ###
+*.log
+*.pot
+*.pyc
+*.xml
+__pycache__/
+static/
+core/migrations
+user/migrations
+venv/
+db.sqlite3
+ngrok.exe
