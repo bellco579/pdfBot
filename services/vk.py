@@ -19,8 +19,6 @@ class Vk:
             self.create_pdf()
 
     def create_pdf(self):
-        self.vkapi.set_ex_pdf_keyboard()
-        self.vkapi.send_message("добавить фото в pdf?")
         title = self.vkapi.text_msg or self.vkapi.get_user_info().last_name
         doc_path = photo_converter(self.photo_list)
         try:
@@ -35,6 +33,8 @@ class Vk:
         except Exception as e:
             print(e)
             self.db.create_doc(title=title, doc_path=doc_path)
+        self.vkapi.set_ex_pdf_keyboard()
+        self.vkapi.send_message("добавить")
 
     def strings(self, attach):
         txt = self.vkapi.text_msg or None

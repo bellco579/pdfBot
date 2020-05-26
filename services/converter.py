@@ -25,7 +25,7 @@ def photo_converter(photoList):
 def add_photo_to_file(main_file_path, add_file_path):
     merger = PdfFileMerger()
     merger.append(main_file_path)
-    print("main path{}".format(main_file_path))
+    print("main path {}".format(main_file_path))
     merger.append(add_file_path)
     filename = create_random_string()
     path = "static/docs/" + filename + ".pdf"
