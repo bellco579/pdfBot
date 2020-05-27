@@ -30,3 +30,6 @@ class Messages:
     def sendError(self, uid):
         self.api.messages.send(access_token=self.token, user_id=uid, message="я не понимаю", keyboard=self.keyboard,
                                )
+
+    def send_add_image_invite(self, uid):
+        self.sendMessage(uid=uid, message="Добавить?")

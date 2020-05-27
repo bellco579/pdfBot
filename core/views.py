@@ -16,4 +16,4 @@ def vk(request):
         x = threading.Thread(target=vk_app.Vk, args=(request,))
         x.start()
         return HttpResponse("ok", status=200)
-    else: return HttpResponse("6e388c3f")
+    else: return HttpResponse("753d0311")

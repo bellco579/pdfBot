@@ -7,8 +7,7 @@ from services.repositories import save_photo, create_random_string
 def photo_converter(photoList):
     filename = create_random_string()
     imageList = []
-    for url in photoList:
-        path = save_photo(url)
+    for path in photoList:
         imageList.append(Image.open(path))
 
     first = imageList[0]

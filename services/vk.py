@@ -1,46 +1,76 @@
+import threading
+
+from core.models import Message
 from services.converter import photo_converter, add_photo_to_file
 from services.db import dbInterface
+from services.services import MessageService, SavePhoto, PDF
 from services.work_with_str import Command
 from vkapi.main import Main
+from . import work_with_str as wws
 
 
 class Vk:
     def __init__(self, rq):
         self.vkapi = Main(rq)
         self.db = dbInterface(self.vkapi.uid)
-        self.photo_list = self.vkapi.get_photos_url()
+        photo_list = self.vkapi.get_photos_url()
         self.u_info = self.vkapi.get_user_info()
         self.db.add_user_info(uid=self.u_info.uid, first_name=self.u_info.first_name, last_name=self.u_info.last_name)
+        last_msg = None
+        msg = self.vkapi.text_msg
+        print("user msg: " + msg)
 
-        if self.photo_list is None:
-            self.strings(False)
+        try:
+            last_msg = self.db.get_last_msg()
+            self.last_msg_txt = last_msg.text
+        except IndexError as e:
+            print(e)
+
+        if photo_list is None:
+            try:
+                if last_msg.have_attach:
+                    if msg == wws.send:
+                        self.create_pdf()
+                        self.strings(False)
+                else:
+                    self.strings(False)
+            except Exception as e:
+                print(e)
+                self.strings(attach=False)
         else:
-            self.strings(True)
-            self.create_pdf()
+            print("massage have attachment")
+            try:
+                if not last_msg.have_attach:
+                    self.strings(True, photo_list)
+                SavePhoto(photo_list, message=last_msg, db=self.db)
+                self.vkapi.set_ex_pdf_keyboard()
+                self.vkapi.send_add_photo_invite()
+            except Exception as e:
+                print(e)
+                self.strings(attach=True, pl=photo_list)
 
     def create_pdf(self):
-        title = self.vkapi.text_msg or self.vkapi.get_user_info().last_name
-        doc_path = photo_converter(self.photo_list)
-        try:
-            last_msg = list(msg for msg in self.db.get_message_list())[-2]
-            if last_msg.have_attach:
-                last_doc = self.db.get_last_doc()
-                path = add_photo_to_file(last_doc.path, doc_path)
-                last_doc.path = path
-                last_doc.save()
-            else:
-                self.db.create_doc(title=title, doc_path=doc_path)
-        except Exception as e:
-            print(e)
-            self.db.create_doc(title=title, doc_path=doc_path)
-        self.vkapi.set_ex_pdf_keyboard()
-        self.vkapi.send_message("добавить")
+        last_msg = self.db.get_last_msg()
+        title = self.last_msg_txt or self.vkapi.get_user_info().last_name
+        pdf = PDF(msg=last_msg, title=title, db=self.db).create_document()
+        self.send_pdf(pdf)
 
-    def strings(self, attach):
+    def send_pdf(self, doc):
+        self.vkapi.send_doc(uid=self.vkapi.uid, doc={'file': open(doc.path, 'rb')}, name=doc.name, message="")
+        print("pdf send to: " + self.vkapi.get_user_info().last_name)
+        for user in self.db.get_linked_user():
+            from_str = "От: {} {} ".format(user.first_name, user.last_name)
+            self.vkapi.send_doc(uid=user.vk_uid, doc={'file': open(doc.path, 'rb')}, name=doc.name, message=from_str)
+            print("pdf send to: " + user.last_name)
+
+    def strings(self, attach, pl=None):
         txt = self.vkapi.text_msg or None
-        self.db.create_message(txt, attach)
+        msg = MessageService(self.db).create_message(txt=txt, attach=attach)
+        if pl is not None:
+            SavePhoto(pl, message=msg, db=self.db)
+            # self.vkapi.send_add_photo_invite()
         if txt is not None:
-            messages = list(msg for msg in self.db.get_message_list())
+            messages = self.db.get_message_list()
             if len(messages) >= 2:
                 Command(command=messages[-2].text, context=messages[-1].text, api=self.vkapi, db=self.db)
             if len(messages) == 1:

@@ -40,7 +40,7 @@ class Command:
         if command == delete_receiver:
             try:
                 user = self.db.del_linked_user(int(context))
-                msg = msg_templates[add_receiver].format(user.first_name)
+                msg = msg_templates["delete_receiver_context"].format(user.first_name)
                 self.api.send_message(msg)
             except:
                 pass
@@ -57,8 +57,3 @@ class Command:
         if context == begin:
             msg = msg_templates["instruction"]
             self.api.send_message(msg)
-        if context == send:
-            doc = self.db.get_last_doc()
-            self.api.send_doc(uid=self.api.uid, doc={'file': open(doc.path, 'rb')}, name=doc.name, message="")
-            for user in self.db.get_linked_user():
-                self.api.send_doc(uid=user.vk_uid, doc={'file': open(doc.path, 'rb')}, name=doc.name, message="")
