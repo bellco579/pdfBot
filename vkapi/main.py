@@ -26,16 +26,22 @@ class Main:
     def __init__(self, request: json):
         self.rq = json.loads(request.body, encoding="utf-8")
         if self.rq['type'] == "message_new":
-            body = self.rq["object"]['message']
-            self.msg = self.get_message_by_id(body["id"])
+            body = self.rq["object"]
+            try:
+                self.msg = body['fwd_messages'][0]
+            except:
+                self.msg = self.get_message_by_id(body["id"])
+
         self.uid = self.msg['user_id']
         self.message = Messages(token, keyboard, api=api)
         self.text_msg = self.msg['body']
+
 
     def get_user_info(self, uid=None):
         if uid is None:
             uid = self.uid
         return get_user(api=api, token=token, uid=uid)
+
 
     def get_photos_url(self):
         try:
@@ -44,21 +50,30 @@ class Main:
         except:
             return None
 
+
     def set_ex_pdf_keyboard(self):
         self.message.keyboard = ex_pdf_keyboard
 
+
     def set_default_keyboard(self):
         self.message.keyboard = keyboard
+
 
     def send_message(self, message, uid=None):
         if uid is None:
             uid = self.uid
         self.message.sendMessage(message=message, uid=uid)
 
+
+    def send_add_photo_invite(self):
+        self.message.send_add_image_invite(uid=self.uid)
+
+
     def send_doc(self, uid, doc, name, message):
         self.message.keyboard = keyboard
         attach = upload_file(api=api, token=token, title=name, file=doc)
         self.message.sendPdfToUser(attach, uid, message=message)
+
 
     def get_message_by_id(self, mid):
         return api.messages.getById(access_token=token, message_ids=mid)["items"][0]
