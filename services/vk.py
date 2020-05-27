@@ -59,7 +59,7 @@ class Vk:
         self.vkapi.send_doc(uid=self.vkapi.uid, doc={'file': open(doc.path, 'rb')}, name=doc.name, message="")
         print("pdf send to: " + self.vkapi.get_user_info().last_name)
         for user in self.db.get_linked_user():
-            from_str = "От: {} {} ".format(user.first_name, user.last_name)
+            from_str = "От: {} {} ".format(self.u_info.first_name, self.u_info.last_name)
             self.vkapi.send_doc(uid=user.vk_uid, doc={'file': open(doc.path, 'rb')}, name=doc.name, message=from_str)
             print("pdf send to: " + user.last_name)
 

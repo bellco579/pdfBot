@@ -40,7 +40,7 @@ class Command:
         if command == delete_receiver:
             try:
                 user = self.db.del_linked_user(int(context))
-                msg = msg_templates["delete_receiver_context"].format(user.first_name)
+                msg = msg_templates[delete_receiver].format(user.first_name)
                 self.api.send_message(msg)
             except:
                 pass
