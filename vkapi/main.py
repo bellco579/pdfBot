@@ -27,15 +27,22 @@ class Main:
         self.rq = json.loads(request.body, encoding="utf-8")
         if self.rq['type'] == "message_new":
             body = self.rq["object"]
+            self.msg = body["message"]
             try:
-                self.msg = body['fwd_messages'][0]
+                self.msg = body['message']['fwd_messages'][0]
             except:
-                self.msg = self.get_message_by_id(body["id"])
+                try:
+                    self.msg = body['message']['reply_message']
+                except:
+                    self.msg = self.get_message_by_id(body['message']["id"])
 
-        self.uid = self.msg['user_id']
-        self.message = Messages(token, keyboard, api=api)
-        self.text_msg = self.msg['body']
-
+            self.uid = body['message']['from_id']
+            self.message = Messages(token, keyboard, api=api)
+            self.text_msg = body['message']['text']
+            # try:
+            #     self.text_msg = self.msg['text']
+            # except:
+            #     self.text_msg = self.msg['body']
 
     def get_user_info(self, uid=None):
         if uid is None:

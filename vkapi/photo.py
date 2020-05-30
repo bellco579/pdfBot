@@ -2,15 +2,19 @@ class Photo:
     def get_url(self, item):
         phtoUrl = ""
         try:
-            photoUrl = item['photo']['photo_1280']
-            print("hight quality")
+            photoUrl = item['photo']["sizes"][0]['url']
         except:
             try:
-                photoUrl = item['photo']['photo_807']
-                print("meddle quality")
+                photoUrl = item['photo']['photo_1280']
+                print("hight quality")
             except:
-                photoUrl = item['photo']['photo_604']
-                print("low quality")
+                try:
+                    photoUrl = item['photo']['photo_807']
+                    print("meddle quality")
+                except:
+                    photoUrl = item['photo']['photo_604']
+                    print("low quality")
+
         return photoUrl
 
     def get_photo_url(self, attachments):
