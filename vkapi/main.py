@@ -15,7 +15,7 @@ from vkapi.services import get_user, upload_file
 token = config.token
 vk_session = vk_api.VkApi(token=token)
 session = vk.Session()
-api = vk.API(session, v=5.8)
+api = vk.API(session, v=5.103)
 id = 1
 
 keyboard = getKeyboard()
