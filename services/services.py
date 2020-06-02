@@ -44,6 +44,7 @@ class PDF:
 
     def create_document(self):
         urls = self.get_urls()
+        urls.reverse()
         doc_path = photo_converter(urls)
         print("Doc path: " + doc_path)
         doc = self.db.create_doc(title=self.title, doc_path=doc_path)
