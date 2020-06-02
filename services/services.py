@@ -26,9 +26,9 @@ class SavePhoto:
         self.msg = message
         self.db = db
         for url in self.photoUrl:
-            x = threading.Thread(target=self.photo_save, args=(url,))
-            x.start()
-            # self.save(url)
+            # x = threading.Thread(target=self.photo_save, args=(url,))
+            # x.start()
+            self.photo_save(url)
 
     def photo_save(self, url):
         path = save_photo(url=url)
