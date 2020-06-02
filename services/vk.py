@@ -40,14 +40,19 @@ class Vk:
         else:
             print("massage have attachment")
             try:
+
                 if not last_msg.have_attach:
                     self.strings(True, photo_list)
                 SavePhoto(photo_list, message=last_msg, db=self.db)
                 self.vkapi.set_ex_pdf_keyboard()
                 self.vkapi.send_add_photo_invite()
+
             except Exception as e:
                 print(e)
                 self.strings(attach=True, pl=photo_list)
+                self.vkapi.set_ex_pdf_keyboard()
+                self.vkapi.send_add_photo_invite()
+
 
     def create_pdf(self):
         last_msg = self.db.get_last_msg()
@@ -68,7 +73,6 @@ class Vk:
         msg = MessageService(self.db).create_message(txt=txt, attach=attach)
         if pl is not None:
             SavePhoto(pl, message=msg, db=self.db)
-            # self.vkapi.send_add_photo_invite()
         if txt is not None:
             messages = self.db.get_message_list()
             if len(messages) >= 2:
