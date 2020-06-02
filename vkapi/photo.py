@@ -19,8 +19,11 @@ class Photo:
 
     def get_photo_url(self, attachments):
         photo_urls = []
+
         for item in attachments:
             if item['type'] == 'photo':
                 url = self.get_url(item)
                 photo_urls.append(url)
+        if len(photo_urls) == 0:
+            return None
         return photo_urls

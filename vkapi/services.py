@@ -30,7 +30,7 @@ def upload_file(api, token, file, title):
     result = json.loads(response.content)
     file = result['file']
 
-    json1 = api.docs.save(access_token=token, file=file, title=title, tags=[])[0]
+    json1 = api.docs.save(access_token=token, file=file, title=title, tags=[])['doc']
 
     owner_id = json1['owner_id']
     photo_id = json1['id']
