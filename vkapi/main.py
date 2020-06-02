@@ -34,7 +34,7 @@ class Main:
                 try:
                     self.msg = body['message']['reply_message']
                 except:
-                    self.msg = self.get_message_by_id(body['message']["id"])
+                    self.msg = body["message"]
 
             self.uid = body['message']['from_id']
             self.message = Messages(token, keyboard, api=api)

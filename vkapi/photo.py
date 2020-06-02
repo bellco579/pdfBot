@@ -2,7 +2,8 @@ class Photo:
     def get_url(self, item):
         phtoUrl = ""
         try:
-            photoUrl = item['photo']["sizes"][0]['url']
+            size = item['photo']["sizes"]
+            photoUrl = size[-1]['url']
         except:
             try:
                 photoUrl = item['photo']['photo_1280']
