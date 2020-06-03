@@ -1,6 +1,6 @@
 from services.model import dataModel
 from core.models import Docs, Message, Photo
-from user.models import Profile
+from user.models import Profile, Linkes
 
 
 class dbInterface:
@@ -17,6 +17,7 @@ class dbInterface:
         user = Profile.objects.get_or_create(vk_uid=uid)[0]
         user.first_name = first_name
         user.last_name = last_name
+        user.linked_users = None
         user.save()
         return user
 
@@ -36,21 +37,18 @@ class dbInterface:
         return msg_list
 
     def get_linked_user(self):
-        return self.get_user().linked_users.all()
+        lu = list(user.receiver for user in self.get_user().linkes_set.all())
+        return lu
 
     def add_linked_user(self, user_info):
         user = self.add_user_info(first_name=user_info.first_name, last_name=user_info.last_name, uid=user_info.uid)
-        lu = self.get_user()
-        lu.linked_users.add(user)
-        lu.save()
+        Linkes.objects.create(owner=self.user, receiver=user).save()
         return user
 
     def del_linked_user(self, position: int):
-        user = self.get_linked_user()[position]
-        lu = self.get_user()
-        lu.linked_users.remove(user)
-        lu.save()
-        return user
+        user = self.user.linkes_set.all()[position]
+        user.delete()
+        return user.receiver
 
     def add_photo_path(self, path, message):
         Photo.objects.create(msg=message, path=path)

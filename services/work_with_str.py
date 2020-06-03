@@ -42,13 +42,13 @@ class Command:
                 user = self.db.del_linked_user(int(context))
                 msg = msg_templates[delete_receiver].format(user.first_name)
                 self.api.send_message(msg)
-            except:
-                pass
+            except Exception as e:
+                print("command {}, error:{}".format(delete_receiver, e))
         if context == delete_receiver:
             msg = msg_templates["delete_receiver_context"]
             count = 0
             for user in self.db.get_linked_user():
-                msg += "{0} {1}\n".format(count, user.first_name)
+                msg += "{0} {1}\n".format(count, user.receiver.first_name)
                 count += 1
             self.api.send_message(msg)
         if context == my_uid:

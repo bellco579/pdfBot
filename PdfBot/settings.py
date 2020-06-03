@@ -24,7 +24,7 @@ SECRET_KEY = '-r9+ojmtpnn&k!-g!2=m*x1n(8awfw0hk6g(stj+q(q_!_dq%+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["e67281174435.ngrok.io", "pdfbottest.na4u.ru", "vkbot.na4u.ru", 'localhost']
+ALLOWED_HOSTS = ["5e855d3c644c.ngrok.io", "pdfbottest.na4u.ru", "vkbot.na4u.ru", 'localhost']
 
 # Application definition
 
