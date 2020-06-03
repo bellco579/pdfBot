@@ -37,7 +37,7 @@ class dbInterface:
         return msg_list
 
     def get_linked_user(self):
-        lu = list(user.receiver for user in self.get_user().linkes_set.all())
+        lu = list(user.receiver for user in Linkes.objects.filter(owner=self.user))
         return lu
 
     def add_linked_user(self, user_info):
@@ -46,7 +46,7 @@ class dbInterface:
         return user
 
     def del_linked_user(self, position: int):
-        user = self.user.linkes_set.all()[position]
+        user = Linkes.objects.filter(owner=self.user)[position]
         user.delete()
         return user.receiver
 

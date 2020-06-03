@@ -48,7 +48,7 @@ class Command:
             msg = msg_templates["delete_receiver_context"]
             count = 0
             for user in self.db.get_linked_user():
-                msg += "{0} {1}\n".format(count, user.receiver.first_name)
+                msg += "{0} {1}\n".format(count, user.first_name)
                 count += 1
             self.api.send_message(msg)
         if context == my_uid:
