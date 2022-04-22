@@ -6,7 +6,7 @@ Django==3.0.6
 fpdf==1.7.2
 idna==2.9
 Pillow==7.1.2
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 pytz==2020.1
 requests==2.23.0
 six==1.14.0
